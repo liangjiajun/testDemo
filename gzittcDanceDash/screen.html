@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GzittcDance</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		*{ padding: 0;margin: 0; font-family: arial,"微软雅黑";}
+		body{ background: #000; }
+		.play_video{ width: 100%; display: none; position: absolute; top: 0; left: 0;}
+		.game_platform{ margin: 0 auto; position: relative; overflow: hidden;}
+		.welcome{ height: 100%; width: 100%; background: linear-gradient(to bottom, #111135,#7c2279,#1d0819);position: absolute; top: 0; left: 0; }
+		.gamer{ position: absolute; top: 0; left: 20%; float: left;margin-top: 3%;}
+		.gamer p{ font-size:  1.5vw; font-weight: bold; text-shadow: 3px 3px 3px #000; color: #fff; padding: 0 10px;}
+		.gamer .score{ font-size: 1.5vw; font-weight: bold; text-shadow: 3px 3px 3px #000; color: #fff; text-align: center;}
+		.gamer .show_event{ position: absolute; top: 4vw; left: 0; width: 100%;display: none;}
+		.gamer .show_event span{ color:#fff; font-size: 1.5vw; font-weight: bold; text-align: center;text-shadow: 0px 0px 5px #fff; display: block;}
+		.title_cn{ font-size:20vw; font-weight:bold; line-height:200%; color:#fff; opacity:0.2;white-space:nowrap;animation: title_cn 30s;animation-timing-function:linear;animation-iteration-count:infinite;}
+		.light{ height:100%; width:100%; background:red; position:absolute; top:0; left:0; animation: light 30s; opacity:0.1;animation-iteration-count:infinite;}
+		.title_en1{ font-size:15vw; position:absolute; color:#fff; font-weight:bold; top:18%; left:5%; transform:rotate(-13deg); text-shadow:3px 3px 4px #000;}
+		.title_en2{ font-size:15vw; position:absolute; color:#fff; font-weight:bold; top:33%; left:55%; transform:rotate(-5deg); text-shadow:3px 3px 4px #000;}
+		.help_text{ font-size:2vw; position:absolute; color:#fff; font-weight:bold; top:80%; width:100%; text-align:center; animation: help_text 2s;animation-iteration-count:infinite; }
+		.dc1{ position:absolute; top:5%; left:23%;}
+		@keyframes light
+		{
+			0%   {background: red;}
+			25%  {background: blue;}
+			50%  {background: green;}
+			70%  {background: yellow;}
+			100% {background: red;}
+		}
+		@keyframes title_cn{
+			0% {margin-left:0;}
+			25% {margin-left:-25%;}
+			50% {margin-left:-50%;}
+			100% {margin-left:-100%;}
+		}
+		@keyframes help_text{
+			0% {opacity:1;}
+			50% {opacity:1;}
+			75% {opacity:0.3;}
+			100% {opacity:1;}
+		}
+		/* 分数显示模块 */
+		.score_div{height: 100%; width: 100%; background: linear-gradient(to bottom, #111135,#7c2279,#1d0819);position: absolute; top: 0; left: 0; display: none;}
+		.score_div div{color: #fff; position: absolute; text-align: center; text-shadow:3px 3px 4px #000;width: 100%; display: none;}
+		.wel_msg{ font-size: 7vw;   top: 10%; }
+		.score_text{  font-size: 2vw;   top: 30%; }
+		.end_score{ font-size: 10vw; font-weight: bold; top: 35%; opacity: 0;}
+		.score_title_text{ font-size: 2vw; font-weight: bold; top: 60%; }
+		.score_title{ font-size: 4vw; font-weight: bold; top: 67%; }
+		.end_score_ani{animation: end_score_ani 0.5s ease-in;animation-fill-mode:forwards; }
+		@keyframes end_score_ani{
+			0% {opacity:0;transform: scale(5,5);}
+			100% {opacity:1;transform: scale(1,1);}
+		}
+	</style>
+	<script type="text/javascript" src="script/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="dancer/DontWannaKnow.js"></script>
+	<script type="text/javascript" src="dancer/CakeByTheOcean.js"></script>
+	<script type="text/javascript" src="dancer/DragosteaDinTei.js"></script>
+	<script type="text/javascript" src="dancer/DontStopMeNow.js"></script>
+	<script type="text/javascript" src="dancer/Sorry.js"></script>
+	<script type="text/javascript" src="dancer/LeanOn.js"></script>
+	<script type="text/javascript" src="dancer/MovesLikeJagger.js"></script>
+	<script type="text/javascript" src="dancer/GangnamStyle.js"></script>
+	<script type="text/javascript">
+
+		var wsserver = 'ws://192.168.71.60:8080';
+		var ws;
+		var test_dance = {};
+		var dance_nm = 0;
+		var err_arr = [];
+		var score = 0;
+		var pj;
+		var dancer;
+
+		var set_game_window = function (){
+			var d_w = $(window).width();
+			var d_h = $(window).height();
+			var r_w = d_w/1920;
+			var r_h = d_h/1080;
+			if(r_w < r_h){
+				$('.game_platform').css({'height':(1060*r_w)+'px','width':(1900*r_w)+'px'});
+			}else{
+				$('.game_platform').css({'height':(1060*r_h)+'px','width':(1900*r_h)+'px'});
+			}
+			$('.play_video').show();
+		}
+
+		var link_server = function(){
+			 ws = new WebSocket(wsserver);
+			 ws.onmessage = function (evt) {
+				var data = eval('(' + evt.data + ')');
+				//console.log(data);
+				switch(data.event){
+					case 'test_delay':
+						ws.send('{"event":"test_delay","timestamp":"'+data.timestamp+'"}');
+						break;
+					case 'start_game':
+						eval("(dancer="+data.music+")");
+						pj = 10000/parseInt(dancer.length)*3;
+						$('.play_video')[0].src = "videos/"+data.music+".mp4";
+						$('.welcome').fadeOut(1000,function(){
+							$('.play_video')[0].play();
+						});
+						break;
+					case 'play':
+						/*if(dancer[dance_nm]){
+							var err = 0;
+							var err_alpha = calc_diff_value(parseFloat(dancer[dance_nm].alpha),parseFloat(data.alpha),'alpha');
+							//err += calc_diff_value(parseFloat(dancer[dance_nm].alpha),parseFloat(data.alpha),'alpha');
+							err += err_alpha * 10;
+							err += calc_diff_value(parseFloat(dancer[dance_nm].beta),parseFloat(data.beta),'beta');
+							err += calc_diff_value(parseFloat(dancer[dance_nm].gamma),parseFloat(data.gamma),'gamma');
+							console.log(err);
+							err_arr.push(err);
+							if(dance_nm % 3 == 2){
+								game.calc_score();
+							}
+
+						}*/
+						test_dance[dance_nm] ={};
+						test_dance[dance_nm].alpha = data.alpha;
+						test_dance[dance_nm].beta  = data.beta;
+						test_dance[dance_nm].gamma = data.gamma;
+						dance_nm++;
+						break;
+				}
+			};
+			 ws.onopen = function(evt) {
+	            ws.send('{"event":"screen"}');
+	        };
+		}
+
+		var video_end_listen = function(){
+			$('.play_video')[0].onended = function(){
+				game.game_over();
+			}
+		}
+
+		function loadScript(url, callback) {
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			if(typeof(callback) != "undefined"){
+				if (script.readyState) {
+					script.onreadystatechange = function () {
+						if (script.readyState == "loaded" || script.readyState == "complete") {
+							script.onreadystatechange = null;
+							callback();
+						}
+					};
+				} else {
+					script.onload = function () {
+						callback();
+					};
+				}
+			}
+			script.src = url;
+			document.body.appendChild(script);
+		}
+
+		var calc_diff_value = function(dancer_value,value,event){
+			switch(event){
+				case 'alpha':
+					var v = Math.abs(dancer_value - value);
+					break;
+				case 'beta':
+					var v1 = Math.abs(dancer_value - value);
+					if(v1 > 180){
+						var v = (180-Math.abs(dancer_value))+(180-Math.abs(value));
+					}else{
+						var v = v1;
+					}
+					break;
+				case 'gamma':
+					var v1 = Math.abs(dancer_value - value);
+					if(v1 > 90){
+						var v = (90-Math.abs(dancer_value))+(90-Math.abs(value));
+					}else{
+						var v = v1;
+					}
+					break;
+			}
+			return parseFloat(v.toFixed(5));
+		}
+
+		var game = {
+			initialize : function(){
+				set_game_window();
+				link_server();
+				video_end_listen();
+			},
+			calc_score : function(){
+				var sc = Math.min(err_arr[0],err_arr[1],err_arr[2]);
+				if(sc < 70){
+					score += pj*1.15;
+					game.show_event('prefect');
+				}else if(sc < 120){
+					score += pj;
+					game.show_event('greate');
+				}else if(sc < 160){
+					score += pj*0.8;
+					game.show_event('good');
+				}else if(sc < 200){
+					score += pj*0.6;
+					game.show_event('ok');
+				}else{
+					score += pj*0;
+					game.show_event('bad');
+				}
+				err_arr = [];
+				$('.score').html(Math.ceil(score));
+			},
+			show_event:function(event){
+				$('.show_event').fadeOut('fast',function(){
+					switch(event){
+						case "prefect":
+							$('.show_event span').css('text-shadow','0 0 8px #ebb447');
+							$('.show_event span').html('PREFECT');
+							break;
+						case "greate":
+							$('.show_event span').css('text-shadow','0 0 8px #91ff48');
+							$('.show_event span').html('GREATE');
+							break;
+						case "good":
+							$('.show_event span').css('text-shadow','0 0 8px #57dbed');
+							$('.show_event span').html('GOOD');
+							break;
+						case "ok":
+							$('.show_event span').css('text-shadow','0 0 8px #a51ab9');
+							$('.show_event span').html('OK');
+							break;
+						case "bad":
+							$('.show_event span').css('text-shadow','0 0 8px #b60635');
+							$('.show_event span').html('BAD');
+							break;
+					}
+					$('.show_event').fadeIn('fast');
+				});
+			},
+			game_over:function(){
+				console.log(JSON.stringify(test_dance));
+				show_score();
+			}
+		}
+
+		var show_score = function(){
+			var txt = '<div class="wel_msg">Congratulations!</div><div class="score_text">您的得分为：</div><div class="end_score">'+score+'</div><div class="score_title_text">获得称号：</div><div class="score_title">舞王大腿，求带飞。</div>';
+			$('.score_div').fadeIn(function(){
+				$('.score_div').html(txt);
+				$(".wel_msg").fadeIn(1000,function(){
+					$(".score_text").fadeIn(1000,function(){
+						$(".end_score").show();
+						$(".end_score").addClass("end_score_ani");
+						$(".score_title_text").fadeIn(1000,function(){
+							$(".score_title").fadeIn(1000);
+						})
+					});
+				});
+			});
+		}
+
+		$(function(){
+			game.initialize();
+		});
+	</script>
+</head>
+<body>
+<div class="game_platform">
+	<video class="play_video">
+	</video>
+	<div class="gamer">
+		<p>PLAYER</p>
+		<div class="player_bg"></div>
+		<div class="score">0</div>
+		<div class="show_event">
+			<span></span>
+		</div>
+	</div>
+	<div class="welcome">
+    	<div class="light"></div>
+    	<div class="title_cn">工贸舞王工贸舞王工贸舞王工贸舞王</div>
+        <div class="dc1"><img src="images/dc1.png" alt="" /></div>
+        <div class="title_en1">DANCER</div>
+        <div class="title_en2">KING</div>
+        <div class="help_text">请使用手机访问，并点击START开始游戏</div>
+    </div>
+    <div class="score_div"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+<head>
+	<title>GzittcDance</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"  />
+	<style type="text/css">
+		*{ padding: 0;margin: 0; font-family: Arial;}
+		body{ background: #000; height: 100%;}
+		.start_btn{ height: 20%; background: #00aace; color: #fff; line-height: 200%; text-align: center; font-size: 4em;}
+		.select_music{ height: 80%; overflow: scroll; -webkit-overflow-scrolling: touch;}
+		.music_icon{ width: 50%; float: left;}
+		.music_icon img{ width: 90%; margin: 5%;}
+		.music_icon p{ color: #fff; text-align: center; margin-bottom: 5%;}
+	</style>
+	<script type="text/javascript" src="script/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript">
+		var delay = 0;
+		var alpha = 0;
+		var beta = 0;
+		var gamma = 0;
+		var wsServer = 'ws://192.168.71.60:8080';
+		var ws;
+		var music = 'DontWannaKnow';
+
+		if(window.DeviceMotionEvent){
+			window.addEventListener('devicemotion',DeviceMotionHandler, false);
+		}
+		function DeviceMotionHandler(eventData) {
+			var rotationRate =eventData.acceleration;
+            /*x = acceleration.x.toFixed(1);
+            y  = acceleration.y.toFixed(1);
+            z = acceleration.z.toFixed(1);
+            var rotationRate = eventData.rotationRate;*/
+
+            if(alpha < parseFloat(rotationRate.x.toFixed(5))){
+            	alpha = Math.abs(rotationRate.x.toFixed(5));
+            }
+            if(alpha < parseFloat(rotationRate.y.toFixed(5))){
+            	alpha = Math.abs(rotationRate.y.toFixed(5));
+            }
+            if(alpha < parseFloat(rotationRate.z.toFixed(5))){
+            	alpha = Math.abs(rotationRate.z.toFixed(5));
+            }
+            // alpha = rotationRate.alpha.toFixed(5);
+            // beta  = rotationRate.beta.toFixed(5);
+            // gamma  = rotationRate.gamma.toFixed(5);
+            //document.getElementById('show_zb').innerHTML = "alpha:"+alpha;
+        }
+
+
+		if (window.DeviceOrientationEvent) {
+        	window.addEventListener('deviceorientation',DeviceOrientationHandler, false);
+        }
+        function DeviceOrientationHandler(eventData) {
+            //alpha = eventData.alpha.toFixed(5);
+            beta  = eventData.beta.toFixed(5);
+            gamma = eventData.gamma.toFixed(5);
+            //document.getElementById('show').innerHTML = "alpha:"+alpha+'--beta:'+beta+'--gamma:'+gamma;
+        }
+
+        function play(){
+        	ws.send('{"event":"play","alpha":"'+alpha+'","beta":"'+beta+'","gamma":"'+gamma+'"}');
+        	alpha = 0;
+        	setTimeout(play,500);
+        }
+
+		$(function(){
+			ws = new WebSocket(wsServer);
+			ws.onmessage = function (evt) {
+				var data = eval('(' + evt.data + ')');
+				switch(data.event){
+					case 'test_delay':
+						delay = (parseInt(new Date().valueOf())-parseInt(data.timestamp))/2;
+						console.log(delay);
+						break;
+				}
+			};
+			ws.onopen = function(evt) {
+	            ws.send('{"event":"mobile","timestamp":"'+new Date().valueOf()+'"}');
+	        };
+
+	        $('.start_btn').click(function(){
+	        	ws.send('{"event":"start_game","music":"'+music+'"}');
+	        	setTimeout(play,4000+delay);
+	        	$('.select_music,.start_btn').fadeOut('fast');
+	        });
+
+	        $('.select_music')[0].ontouchmove=function(e){
+			    e.stopPropagation();
+			};
+
+			$('.music_icon').click(function(){
+				$('.music_icon').css('background','none');
+				$(this).css('background','rgb(153,0,91)');
+				music = $(this).attr('data-music');
+			});
+
+		});
+
+		document.ontouchmove = function(e){ e.preventDefault(); };
+	</script>
+</head>
+<body>
+	<div class="select_music">
+		<div class="music_icon" data-music="MovesLikeJagger">
+			<img src="images/MovesLikeJagger.png">
+			<p>Moves Like Jagger</p>
+		</div>
+		<div class="music_icon" data-music="GangnamStyle">
+			<img src="images/GangnamStyle.png">
+			<p>Gangnam Style</p>
+		</div>
+		<div class="music_icon" data-music="DontWannaKnow">
+			<img src="images/DontWannaKnow.png">
+			<p>Don't Wanna Know</p>
+		</div>
+		<div class="music_icon" data-music="CakeByTheOcean">
+			<img src="images/CakeByTheOcean.png">
+			<p>Cake By The Ocean</p>
+		</div>
+		<div class="music_icon" data-music="DragosteaDinTei">
+			<img src="images/DragosteaDinTei.png">
+			<p>Dragostea Din Tei</p>
+		</div>
+		<div class="music_icon" data-music="DontStopMeNow">
+			<img src="images/DontStopMeNow.png">
+			<p>Don't Stop Me Now</p>
+		</div>
+		<div class="music_icon" data-music="Sorry">
+			<img src="images/Sorry.png">
+			<p>Sorry</p>
+		</div>
+		<div class="music_icon" data-music="LeanOn">
+			<img src="images/LeanOn.png">
+			<p>Lean On</p>
+		</div>
+	</div>
+	<div class="start_btn">START</div>
+	<!-- <div id="show_zb" style="background: #FFF; position: absolute; top: 0; left: 0;">123</div> -->
+</body>
+</html>
