@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style>
+	*{ margin:0; padding:0; font-family:arial;}
+	.width{ width:1000px; margin:10px auto;}
+	.chart{ height:500px; overflow-y:scroll; background:#f5f5f5; padding:20px; border:1px solid #ccc; border-radius:3px;}
+	
+	b{ font-family:Consolas, "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Courier New", monospace; font-size:20px; color:#999;}
+	span{ display:inline-block; margin:0 20px; background:#3D9EC1; color:#fff; padding:5px 10px; border-radius:3px; max-width:70%;word-wrap: break-word;}
+	
+	form{ margin:10px 0;}
+	input,button{ height:40px; border-radius:3px;}
+	input{ width:67%; background:#eee; float:left; padding:0 10px; border:1px solid #ccc;}
+	button{ width:30%; cursor:pointer; float:right; background:#5ABB5C; color:#fff; font-size:18px; border:1px solid #4BA644; text-shadow:1px 1px 0 rgba(0,0,0,0.2); transition:all 0.5s;}
+	button:hover{ background:#4BA644;}
+</style>
+</head>
+
+<body>
+
+<div class="width">
+	<div class="chart"></div>
+    <form method="post" action="server.php">
+        <input type="text" name="chart" required autofocus />
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+	var sou = new EventSource("server.php");
+	// 定义由服务器发送的事件的来源
+	var one = 0;
+	
+	sou.onmessage = function(event){
+		var chart = document.querySelector('.chart');
+		
+		var data = eval('['+event.data+']');
+		chart.innerHTML = data[0].chart;
+		
+		if(one < 1){
+			var style = document.getElementsByTagName('style')[0];
+			style.innerHTML += '.'+data[0].name+'{ text-align:right;} .'+data[0].name+' b{ float:right;}';
+			one++;
+			chart.scrollTop = chart.scrollHeight;
+		}
+	}
+</script>
+</body>
+</html>
