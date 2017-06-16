@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title> 音乐波动 </title>
+</head>
+<body class="body">
+    <div id="wrapper">
+        <div class="file_wrapper">
+             <div id="info">
+                 提示信息：
+            </div>
+            <input type="file" id="uploadedFile"></input>
+        </div>
+        音量: <input type="range" min="0" max="100" value="100" id="range">
+        <div id="stop">暂停</div>
+        <div id="play">播放</div>
+        <p>
+            当前播放时间：<span id="curTime">0</span>
+        </p>
+        <div id="visualizer_wrapper">
+            <canvas id='canvas' width="800" height="350"></canvas>
+        </div>
+    </div>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</body>
+</html>
+<script>
+	var audioApi = function() {
+	    this.file = null;
+	    this.fileName = null;
+	    this.audioContext = null;
+	    this.source = null;
+	    this.info = document.getElementById('info').innerHTML;
+	    this.animationId = null;
+	    this.status = 0;
+	    this.forceStop = false;
+	    this.allCapsReachBottom = false;
+	    this.gainNode = null;
+	    this.currenttime = null;
+	};
+	audioApi.prototype = {
+	    init: function() {
+	        this._obj();
+	        this._addEventListner();
+	    },
+	    _obj: function() {
+	        window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
+	        window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
+	        try {
+	            this.audioContext = new AudioContext();
+	        } catch (e) {
+	            console.log('浏览器不支持AudioContext');
+	        }
+	    },
+	    _addEventListner: function() {
+	        var that = this,
+	            audioInput = document.getElementById('uploadedFile'),
+	            dropContainer = document.getElementsByTagName("canvas")[0];
+
+	        audioInput.onchange = function() {
+	            console.log(audioInput.files)
+	            if (audioInput.files.length !== 0) {
+	                that.file = audioInput.files[0];
+	                that.fileName = that.file.name;
+	                that._start();
+	            };
+	        };
+
+	    },
+	    _start: function() {
+	        var that = this,
+	            file = this.file,
+	            fr = new FileReader();
+	        fr.onload = function(e) {
+	            var fileResult = e.target.result;
+	            var audioContext = that.audioContext;
+	            if (audioContext === null) {
+	                return;
+	            };
+	            that._tips('正在解码文件', true);
+	            audioContext.decodeAudioData(fileResult, function(buffer) {
+	                that._tips('解码完成，正在播放', true);
+	                that._visualize(audioContext, buffer);
+	            }, function(e) {
+	                that._tips('解码失败', false);
+	            });
+	        };
+	        fr.onerror = function(e) {
+	            that._tips('读取文件失败', false);
+	        };
+
+	        this._tips('开始读取文件', true);
+	        fr.readAsArrayBuffer(file);
+	    },
+	    _visualize: function(audioContext, buffer) {
+	        var cur = audioContext.currentTime;
+	        var that = this;
+
+	        function playSound(c, start) {
+	            var audioBufferSouceNode = audioContext.createBufferSource(),
+	                analyser = audioContext.createAnalyser();
+	            that.gainNode = audioContext.createGain();
+
+	            audioBufferSouceNode.connect(that.gainNode);
+	            that.gainNode.connect(analyser);
+	            analyser.connect(audioContext.destination);
+
+	            audioBufferSouceNode.buffer = buffer;
+
+	            that._range();
+	            audioBufferSouceNode.loop = true;
+	            audioBufferSouceNode.start(c,start);// 多少秒之后开始播放，从哪里开始播放，播放持续时间
+
+	            that._drawHZ(analyser, audioBufferSouceNode, audioContext);
+	        }
+	        playSound(cur, 0);
+	        this._range();
+
+	        document.getElementById("stop").onclick = function() {
+	            audioContext.suspend().then(function() {
+	                    console.log(audioContext.state)
+	            })
+	        }
+
+	        document.getElementById("play").onclick = function() {
+	            audioContext.resume().then(function() {
+	                    console.log(audioContext.state)
+	            })
+
+	        }
+	    },
+	    _range: function() {
+	        var range = document.getElementById("range"),
+	            that = this;
+	        range.onchange = function() {
+	            that.gainNode.gain.value = this.value / 100;
+	        }
+	    },
+	    _drawHZ: function(analyser, audioBufferSouceNode, audioContext) {
+	        var canvas = document.getElementById('canvas'),
+	            cwidth = canvas.width,
+	            cheight = canvas.height,
+	            meterWidth = 10,
+	            gap = 2,
+	            capHeight = 2,
+	            meterNum = 800 / (10 + 2), //计算当前画布上能画多少条
+	            ctx = canvas.getContext('2d');
+
+	        gradient = ctx.createLinearGradient(0,0,170,0);
+	        gradient.addColorStop(1, '#ccc');
+	        gradient.addColorStop(0.5, '#f00');
+	        gradient.addColorStop(0, '#fff');
+	        ctx.fillStyle = gradient;
+	        var drawMeter = function() {
+	            var array = new Uint8Array(analyser.frequencyBinCount);
+	            analyser.getByteFrequencyData(array);
+
+	            var step = Math.round(array.length / meterNum);
+	            ctx.clearRect(0, 0, cwidth, cheight);
+	            for (var i = 0; i < meterNum; i++) {
+	                var value = array[i * step];
+	                ctx.fillRect(i * 12, cheight - value + capHeight, meterWidth, cheight);
+	            }
+
+	             document.getElementById('curTime').innerHTML = audioContext.currentTime;
+	            requestAnimationFrame(drawMeter);
+	        }
+	        requestAnimationFrame(drawMeter);
+	    },
+	    _tips: function(text, processing) {
+	        var infoBar = document.getElementById('info'),
+	            that = this;
+	        infoBar.innerHTML = text;
+	    }
+	}
+
+
+	var a = new audioApi();
+	a.init();
+
+</script>
