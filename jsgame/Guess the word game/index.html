@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>猜数字</title>
+</head>
+<body>
+	<input type="text" placeholder="填数字" id="number" required>
+	<input type="button"  id="guess" value="Send">
+	<div id="text"></div>
+</body>
+</html>
+<script>
+ var text = document.getElementById('number'),
+ 	guess =	document.getElementById('guess'),
+ 	content =document.getElementById('text');
+var randnum= getrandom(100,1);
+console.log(randnum);
+
+guess.onclick =function(){
+	 game(text,randnum);
+}
+
+
+// 生成随机数
+function getrandom(max,min){
+	var range = max-min,/*用最大的值减去最少的值*/
+		rand = Math.random();
+	return(min+Math.round(rand*range));	/*最少的值+四舍五入后的大-小*随机数*/
+}
+/*游戏逻辑*/
+function game(t,r){ 
+	var n=parseInt(t.value);
+	if(n > 100 || n < 0 || isNaN(n) == true){
+		content.innerHTML="请输入1-100的数字";
+	}else{
+		if(t.value ==''){
+			content.innerHTML ='输入内容不能为空';
+		}else if(Math.abs(t.value-r) <=5 && t.value > r){
+			content.innerHTML =t.value+' 大了，不过超接近啦';
+		}else if(Math.abs(t.value-r) <=5 && t.value < r){
+			content.innerHTML =t.value+' 小啦, 不过超接近啦';
+		}else if(Math.abs(t.value-r) < 15 && t.value > r){
+			content.innerHTML =t.value+' 大了，接近啦';
+		}else if(Math.abs(t.value-r) < 15 && t.value < r){
+			content.innerHTML =t.value+' 小啦, 接近啦';
+		}else if(t.value > r){
+			content.innerHTML =t.value+' 大了';
+		}else if( t.value < r){
+			content.innerHTML =t.value+' 小啦';
+		}else if(t.value==r){
+			content.innerHTML =t.value+' 对啦！';
+		}
+	}
+}
+
+
+
+
+
+</script>

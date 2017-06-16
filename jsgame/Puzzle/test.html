@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="script/jquery.min.js"></script>
+	<script src="script/jquery-ui-1.9.2.custom.min.js"></script>
+	<style>
+		*{padding: 0;margin: 0;}
+		.main{float: left;width: 400px;height: 400px;background-color:orange;margin-top: 50px;margin-left: 50px; }
+		.refer{width: 400px;height: 400px;background-color:white;opacity:.5;border:1px solid #ccc;
+		background-size: 400px;float: left;background-image: url(images/4.png);margin-top: 50px;margin-left: 50px;}
+		div img{width: 120px;height: 120px;margin-top: 50px;}
+		.select{float: left;margin-top: 50px;margin-left: 50px;}
+		.main div,
+		.refer div{float: left;background-size: 400px;box-sizing: border-box;}
+		.main div{background-image: url(images/4.png);}
+		.img img{margin: 50px;}
+
+		.clicked{background-color:rgba(255, 255, 255, .3);}
+		
+		.rang1{transform:rotate(0deg);}
+		.rang2{transform:rotate(90deg);}
+		.rang3{transform:rotate(180deg);}
+		.rang4{transform:rotate(270deg);}
+
+
+		.image1{background-image: url(images/1.png) !important;}
+		.image2{background-image: url(images/2.png) !important;}
+		.image3{background-image: url(images/3.png) !important;}
+		.image4{background-image: url(images/4.png) !important;}
+
+	</style>
+</head>
+<body>
+	<div class="main"></div>
+	<div class="refer"></div>
+	<div style="clear:both"></div>
+	<div class="img" id="preview2">
+		<!-- <img src="images/1.png" alt="1">
+		<img src="images/2.png" alt="2">
+		<img src="images/3.png" alt="3">
+		<img src="images/4.png" alt="4"> -->
+	</div>
+
+	<div class="select">
+		<label for="easy">简单</label>
+		<input type="radio" name="level" value="1" id="easy" checked>
+		<label for="hand">困难</label>
+		<input type="radio" name="level" value="2" id="hand">
+		<label for="dare">挑战</label>
+		<input type="radio" name="level" value="3" id="dare">
+		<label for="hell">地狱</label>
+		<input type="radio" name="level" value="4" id="hell"><br><br>
+		<label for="file">请选取一个图像文件:</label>
+		<input type="file" id="file">
+		<input type="button" name="" value="提交图片" onclick="readAsDataURL()">
+	</div>
+	
+
+</body>
+</html>
+<script src="script/function.js"></script>
+
+

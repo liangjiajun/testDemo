@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="script/jquery.min.js"></script>
+	<script src="script/jquery-ui-1.9.2.custom.min.js"></script>
+	<style type="text/css" media="screen">
+	*{padding: 0;margin: 0;}
+	div{width: 400px;height: 400px;margin-left: 10%;margin-top: 10%;border:1px solid #ccc;}
+	.left{opacity: .4; background-image: url(images/4.png);  background-size: 100%;float:right;margin-right: 10%;}
+	.left div{border:0;height: 200px;flex:0 0 200px;margin: 0;float: left;}
+	.right{background-color: #0ff; display: flex;flex-wrap:wrap;float:left;
+	 /*background-image: url(4.png);background-size: 400px;*/	}
+	.right div{border:0;height: 200px;flex:0 0 200px;margin: 0; background-image: url(images/4.png); background-size: 400px; box-sizing:border-box;}
+	.bg_img{width: 70%;position: absolute;top: -180px;height: 100px;border:0;}
+	.bg_img img{width: 80px;height: 80px;margin-right: 60px;border:1px solid #00f;opacity: .5;}
+
+
+	.level_hand{height:133.3333333px !important;;flex:0 0 133.3333333px !important;}
+	.level_hand_more{height:100px !important;;flex:0 0 100px !important;}
+
+	.img1{background-image:url(images/1.png) !important;}
+	.img2{background-image:url(images/2.png) !important;}
+	.img3{background-image:url(images/3.png) !important;}
+	.img4{background-image:url(images/4.png) !important;}
+	 
+	/*2*2*/	
+	.set1{background-position: 0 0;}
+	.set2{background-position: 200px 0px;}
+	.set3{background-position: 0px 200px;}
+	.set4{background-position: 200px 200px;} 
+	
+
+	.rang1{transform:rotate(0deg);}
+	.rang2{transform:rotate(90deg);}
+	.rang3{transform:rotate(180deg);}
+	.rang4{transform:rotate(270deg);}
+	.bg{opacity: .8;background-color: #fff;}
+	.clicked{border:1px solid #0ff;opacity:.6;}
+
+
+
+/*3*3*/
+ 	
+.move1{background-position: 0 0;}
+.move2{background-position: -133px 0;}
+.move3{background-position: -666px 0;}
+.move4{background-position: 0px -133px;}
+.move5{background-position: -133px -133px;}
+.move6{background-position: -666px -133px;}
+.move7{background-position: 0px -666px;}
+.move8{background-position: -133px -666px;}
+.move9{background-position: -666px -666px;} 
+
+/* 4*4 */
+/*
+.right .move1{background-position: 0 0;}
+.right .move2{background-position: 300px 0px;}
+.right .move3{background-position: 200px 0px;}
+.right .move4{background-position: 100px 0px;} 
+.right .move5{background-position: 0px 300px;}
+.right .move6{background-position: 300px 300px;}
+.right .move7{background-position: 600px 300px;}
+.right .move8{background-position: 900px 300px;}
+.right .move9{background-position: 0 600px;}
+.right .move10{background-position: 300px 600px;}
+.right .move11{background-position: 600px 600px;}
+.right .move12{background-position: 900px 600px;} 
+.right .move13{background-position: 0 900px;}
+.right .move14{background-position: 300px 900px;}
+.right .move15{background-position: 600px 900px;}
+.right .move16{background-position: 900px 900px;}  
+*/
+</style>
+</head>
+<body>
+	<div class="bg_img">
+	<h2>请选中一张图进行组合</h2>
+		<img src="images/1.png" alt="img">
+		<img src="images/2.png" alt="img">
+		<img src="images/3.png" alt="img">
+		<img src="images/4.png" alt="img">
+	</div>
+	<div class="right"></div>
+	<div class="left"></div>
+	<p style="clear:both"></p>
+	<br>
+	<br>
+	<label for="easy">简单</label>
+	<input type="radio" name="level" value="1" id="easy">
+	<label for="hand">困难</label>
+	<input type="radio" name="level" value="2" id="hand" >
+	<label for="hand_more">困难*1</label>
+	<input type="radio" name="level" value="3" id="hand_more" >
+</body>
+</html>
+<script src="script/function.js"></script>

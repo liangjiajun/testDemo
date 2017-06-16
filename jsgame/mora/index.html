@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<style>
+	.warp{width:800px;height: 460px;margin: 0 auto;text-align: center;border:2px solid #0ff;padding: 10px;}
+	.warp>img{width: 300px;height: 200px;border:5px solid #00f;margin: 0 auto;display: block;}
+	.content{display: flex;margin-top: 50px;}
+	.content a{flex:1;width:250px;height: 160px;display: block;border:2px solid #0ff;margin-right: 10px;}
+	.content img{flex:1;width:250px;height: 160px;opacity: .4;}
+	.content img:hover{opacity: 1;}
+	#pc,#end{color: #f00;}
+</style>
+<body>
+<div class="warp">
+	<img src="0.jpg" alt="rock" style="opacity:1.0" id="pc_img"><br/>
+	<b>Computer</b><br/>
+	<div class="content">
+		<a href="#" onclick="game(0)"><img src="0.jpg"></a>
+		<a href="#" onclick="game(1)"><img src="1.jpg"></a>
+		<a href="#" onclick="game(2)"><img src="2.jpg"></a>
+	</div>
+</div>
+	电脑<div id="pc"></div>
+	结果<div id="end"></div>
+</body>
+</html>
+<script>
+var pc_img = document.getElementById('pc_img');
+    myDo = ['剪刀','石头','布'],i=0;;
+
+function game(i){
+	var rad = Math.floor(Math.random()*3);
+	pc.innerHTML = myDo[rad];
+	var diff = i-rad;
+	if(diff==2 || diff ==1){
+		end.innerHTML = "WIN";
+	}else if(diff==-1 || diff ==2){
+		end.innerHTML = "LOASE";
+	}else{
+		end.innerHTML = "AND";
+	}
+}
+
+function myload()
+{	
+	i=i+1;
+	m=i%3;
+	switch(m){
+		case 0:
+		pc_img.src="0.jpg";
+		break;
+		case 1:
+		pc_img.src="1.jpg";
+		break;
+		case 2:
+		pc_img.src="2.jpg";
+		break;
+	}
+	t=setTimeout(function(){myload()},90);
+}
+myload();
+</script>
