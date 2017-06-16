@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{padding: 0;margin: 0;box-sizing: border-box;}
+		#box{width: 100px;height: 100px;border-radius: 50%;top: 10px;left: 10px;background: #0ff;position: absolute;cursor: move;}
+	</style>
+</head>
+<body>
+	<div id="box"></div>
+</body>
+</html>
+<script>
+window.onload=()=>{
+
+var gBox = document.getElementById('box'),
+	timer=null,
+	lastX = 0,
+	lastY = 0,
+	speedX = 0,
+	speedY =0;
+
+
+gBox.onmousedown=(ev)=>{	
+	 //Get box center
+	 centerX = ev.clientX-gBox.offsetLeft;   		
+	 centerY = ev.clientY-gBox.offsetTop;   	
+
+	 document.onmousemove=(ev)=>{
+	 	//Get box in screen position
+	 	domBoxLeft = ev.clientX - centerX;
+	 	domBoxTop= ev.clientY - centerY;
+
+	 	gBox.style.top = domBoxTop+'px';
+	 	gBox.style.left =domBoxLeft+'px';
+
+	 	speedX = domBoxLeft - lastX;
+	 	speedY = domBoxTop - lastY;
+	 	// console.log('currut' +domBoxLeft +' ----last'+ lastX);
+	 	lastX = domBoxLeft;
+	 	lastY = domBoxTop;
+
+	 }
+
+	 document.onmouseup=()=>{
+	 	document.onmousemove = null;
+	 	document.onmouseup=null;
+	 	move(gBox);
+	 }
+	 clearInterval(timer);
+	 return false;
+}
+
+move=(obj)=>{
+    clearInterval(timer);
+    timer=setInterval(function(){
+
+        speedY+=3;
+        var domBoxMoveLeft=obj.offsetLeft+speedX,//球的移动的左边距+移动速度
+            domBoxMoveTop=obj.offsetTop+speedY,//球的移动的上边距+移动速度
+            srceenWidth=document.documentElement.clientWidth,//屏幕的宽度
+            srceenHeight=document.documentElement.clientHeight;//屏幕的高度
+
+        if(domBoxMoveLeft<=0){//如果向左移动的速度小于或等于0
+            speedX*=-0.8;//x轴的速度变化：自身 * -0.8
+            domBoxMoveLeft=0;//左移速度为0
+        }else if(domBoxMoveLeft>=srceenWidth-100){ //左移速度 >= 屏幕宽度 - 自身的宽度
+            speedX*=-0.8;
+            domBoxMoveLeft=srceenWidth-100;
+        };
+
+
+        if(domBoxMoveTop<=0){
+            speedY*=-1;
+            speedX*=0.8;
+            domBoxMoveTop=0;
+        }else if(domBoxMoveTop>=srceenHeight-100){
+            speedY*=-0.8;
+            speedX*=0.8;
+            domBoxMoveTop=srceenHeight-100;
+        };
+
+
+        if(Math.abs(speedX)<1){
+            speedX=0;
+        };
+        if(Math.abs(speedY)<1){
+            speedY=0;
+        };
+
+        if(speedX==0 && speedY==0 && domBoxMoveTop==srceenHeight-100){
+            clearInterval(timer);
+        }else{
+            obj.style.left=domBoxMoveLeft+'px';
+            obj.style.top=domBoxMoveTop+'px';
+        }
+    },30)
+}
+
+move(gBox);
+
+
+
+document.onkeydown = (ev)=>{
+	switch(ev.keyCode){
+		case 38: console.log('top');
+		break;
+		case 39: console.log('right');
+		break;
+		case 40: console.log('down');
+		break;
+		case 37: console.log('left');
+		break;
+
+	}
+}
+
+
+
+
+
+
+}
+</script>				
+
