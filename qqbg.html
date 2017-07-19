@@ -6,18 +6,18 @@
   <meta name="keywords" content="" />
   <meta name="description" content="" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
-  <title> 仿QQ登录背景 </title>
+  <title>qq鑳屾櫙</title>
   <style>
       html,body{margin:0;padding:0;overflow:hidden;}
      .stage{position:absolute;left:0;top:0;width:100%;height:100%;}
-      /*颜色在81行hsl中设置*/
   </style>
  </head>
  <body>
     <div class="stage" id="stage"></div>
     <script>
 
-"use strict"; (function(g, n) {
+"use strict";
+(function(g, n) {
     var d = 6,
     x = typeof n === "string" ? document.querySelector(n) : n,
     l = document.createElement("canvas"),
@@ -37,7 +37,7 @@
     c = 0.2,
     f,
     h = 0;
-    g.raf = g.requestAnimationFrame || g.webkitRequestAnimationFrame || 
+    g.raf = g.requestAnimationFrame || g.webkitRequestAnimationFrame ||
     function(A) {
         return setTimeout(A, 1000 / 60)
     };

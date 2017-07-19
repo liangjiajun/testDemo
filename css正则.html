@@ -50,70 +50,70 @@
 
 
 
-<h2>css匹配</h2>	
+<h2>css匹配</h2>
 
-	<h3>直接匹配属性为attr的元素</h3> 
-	<div attr="val">val</div>      
-	<div attr="text val">text val</div> 
-	<div attr="value">value</div>    
-	<div attr="val-ue">val-ue</div>   
+	<h3>直接匹配属性为attr的元素</h3>
+	<div attr="val">val</div>
+	<div attr="text val">text val</div>
+	<div attr="value">value</div>
+	<div attr="val-ue">val-ue</div>
 	<hr>
 
-	<h3>元素的属性名是'attr'值必须是'dd'：</h3> 
-	<div attr="dd">dd</div>      
-	<div attr="text dd">text dd</div> 
-	<div attr="ddue">ddue</div>    
+	<h3>元素的属性名是'attr'值必须是'dd'：</h3>
+	<div attr="dd">dd</div>
+	<div attr="text dd">text dd</div>
+	<div attr="ddue">ddue</div>
 	<div attr="dd-ue">dd-ue</div>
 	<hr>
 
-	<h3>中文匹配：[attr~="我"]</h3> 
-	<div attr="我">我</div> 
-	<div attr="你">你</div> 
-	<div attr="我">我</div> 
+	<h3>中文匹配：[attr~="我"]</h3>
+	<div attr="我">我</div>
+	<div attr="你">你</div>
+	<div attr="我">我</div>
 	<hr>
 
-	<h3>[attr|=”bar”]：'attr'属性值开头必须是bar的单词，或者开头是bar-</h3> 
-	<div attr="bar">bar</div>       
-	<div attr="barval">barval</div>    
-	<div attr="bar-val">bar-val</div>   
-	<div attr="bar val">bar val</div> 
+	<h3>[attr|=”bar”]：'attr'属性值开头必须是bar的单词，或者开头是bar-</h3>
+	<div attr="bar">bar</div>
+	<div attr="barval">barval</div>
+	<div attr="bar-val">bar-val</div>
+	<div attr="bar val">bar val</div>
 	<hr>
 
 <h2>css3匹配</h2>
 
-	<h3>[attr^="val"]：值开头三个字符需要是val</h3> 
+	<h3>[attr^="val"]：值开头三个字符需要是val</h3>
 	<div class="css3 css3_1">
-		<div attr="val">val</div>      
-		<div attr="text val">text val</div> 
-		<div attr="value">value</div>    
+		<div attr="val">val</div>
+		<div attr="text val">text val</div>
+		<div attr="value">value</div>
 		<div attr="val-ue">val-ue</div>
 	</div>
-	<h3>[attr$=”val”]：属性值最后三个字符需要是val</h3> 
+	<h3>[attr$=”val”]：属性值最后三个字符需要是val</h3>
 	<div class="css3 css3_2">
-		<div attr="val">val</div>      
-		<div attr="text val">text val</div> 
-		<div attr="value">value</div>    
+		<div attr="val">val</div>
+		<div attr="text val">text val</div>
+		<div attr="value">value</div>
 		<div attr="val-ue">val-ue</div>
 	</div>
-	<h3>[attr*=”val”]：属性值任意位置包含val这三个字符就可以</h3> 
+	<h3>[attr*=”val”]：属性值任意位置包含val这三个字符就可以</h3>
 	<div class="css3 css3_3">
-		<div attr="val">val</div>      
-		<div attr="text val">text val</div> 
-		<div attr="value">value</div>    
+		<div attr="val">val</div>
+		<div attr="text val">text val</div>
+		<div attr="value">value</div>
 		<div attr="val-ue">val-ue</div>
 	</div>
-	
-<h2>重点介绍</h2>	
+
+<h2>重点介绍</h2>
 <h3>属性值大小写不敏感的i：[attr operator value i]</h3>
 <p>[attr~="val" i], [attr*="val" I]等都是合法的写法。其中，i也可以使用大写I</p>
 
 <div class="more">
-	<div attr="VAL">VAL</div>      
-	<div attr="Text val">Text val</div> 
-	<div attr="Value">Value</div>    
+	<div attr="VAL">VAL</div>
+	<div attr="Text val">Text val</div>
+	<div attr="Value">Value</div>
 	<div attr="Val-ue">Val-ue</div>
 </div>
-	
+
 
 
 </body>

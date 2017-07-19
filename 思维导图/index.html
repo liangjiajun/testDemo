@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+
+      <input type="button"  style=" margin:2px 0 0 2px; background:#ddd;  height:25px; border:1px solid #999; width:80px; " onclick="RemoveChild(this);" value="保存" />
+     <input type="button"  style=" margin:2px 0 0 2px; background:#ddd;  height:25px; border:1px solid #999; width:80px; " onclick="RemoveChild(this);" value="添加" />
+
+    <div class="tree">
+        <ul>
+            <li>
+                <a href="javascript:;" onclick="addChild(this);" >river</a>
+            </li>
+        </ul>
+    </div>
+
+    <script type="text/javascript" src="http://cdn.gbtags.com/jquery/1.11.1/jquery.min.js"></script>
+</body>
+</html>
+<script>
+
+    /*Javascript代码片段*/
+var addChild=function(obj){
+    var strText=window.prompt( "请输入结构名称")
+    if(strText!=null){
+        if(strText== '' ){
+            alert("请输入字符");
+        }
+        var li="<li><a href=\"javascript:;\" onclick=\"addChild(this);\">"+strText+"</a></li>";
+        if($(obj).parent().find("ul").length>0){
+            $(obj).parent().children("ul").first().append(li);
+        }else{
+            $(obj).parent().append("<ul>"+li+"</ul>");
+        }
+    }else{
+        var strText=confirm('确实删除吗？')
+        if(strText!=false){$(obj).parent().remove();}
+    }
+};
+var RemoveChild=function(obj){alert($(".tree").html());}
+
+
+</script>
